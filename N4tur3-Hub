@@ -1,4 +1,4 @@
-local Starlight = loadstring(game:HttpGet("https://raw.nebulasoftworks.xyz/starlight"))()
+loadstring([[local Starlight = loadstring(game:HttpGet("https://raw.nebulasoftworks.xyz/starlight"))()
 local NebulaIcons = loadstring(game:HttpGet("https://raw.nebulasoftworks.xyz/nebula-icon-library-loader"))()
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
@@ -28,31 +28,72 @@ local GroundTab = TabSection:CreateTab({
     Columns = 2,
 }, "GroundTab")
 
-local cfSpeedEnabled = false
+local velocityEnabled = false
 local tpWalkEnabled = false
 local jumpEnabled = false
 local infJumpEnabled = false
+local noclipEnabled = false
 
-local currentCFSpeed = 1000
+local currentVelocitySpeed = 100
 local currentTPIncrement = 150 
 local currentJumpPower = 500
 
+local velocityConnection
+local noclipConnection
+
+-- Velocity Speed Function
+local function setVelocity(state)
+    velocityEnabled = state
+    if velocityConnection then velocityConnection:Disconnect() end
+    if state then
+        velocityConnection = RunService.Heartbeat:Connect(function()
+            local char = LocalPlayer.Character
+            local root = char and char:FindFirstChild("HumanoidRootPart")
+            local hum = char and char:FindFirstChild("Humanoid")
+            if root and hum and hum.MoveDirection.Magnitude > 0 then
+                local vel = Instance.new("BodyVelocity")
+                vel.MaxForce = Vector3.new(4000, 0, 4000)
+                vel.Velocity = hum.MoveDirection * currentVelocitySpeed
+                vel.Parent = root
+                game.Debris:AddItem(vel, 0.1)
+            end
+        end)
+    end
+end
+
+-- Noclip Function
+local function setNoclip(state)
+    noclipEnabled = state
+    if noclipConnection then noclipConnection:Disconnect() end
+    if state then
+        noclipConnection = RunService.Stepped:Connect(function()
+            local char = LocalPlayer.Character
+            if char then
+                for _, part in ipairs(char:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.CanCollide = false
+                    end
+                end
+            end
+        end)
+    else
+        local char = LocalPlayer.Character
+        if char then
+            for _, part in ipairs(char:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = true
+                end
+            end
+        end
+    end
+end
+
 RunService.Heartbeat:Connect(function()
     local char = LocalPlayer.Character
-    local root = char and char:FindFirstChild("HumanoidRootPart")
     local hum = char and char:FindFirstChild("Humanoid")
-    
-    if root and hum then
-        if cfSpeedEnabled and hum.MoveDirection.Magnitude > 0 then
-            root.CFrame = root.CFrame + (hum.MoveDirection * (currentCFSpeed / 100))
-        end
-        if tpWalkEnabled and hum.MoveDirection.Magnitude > 0 then
-            root.CFrame = root.CFrame + (hum.MoveDirection * currentTPIncrement)
-        end
-        if jumpEnabled then
-            hum.UseJumpPower = true
-            hum.JumpPower = currentJumpPower
-        end
+    if hum and jumpEnabled then
+        hum.UseJumpPower = true
+        hum.JumpPower = currentJumpPower
     end
 end)
 
@@ -71,11 +112,11 @@ local SpeedGroup = GroundTab:CreateGroupbox({
 }, "SpeedGroup")
 
 SpeedGroup:CreateToggle({
-    Name = "Toggle CFrame Speed",
+    Name = "Toggle Velocity Speed",
     CurrentValue = false,
     Style = 2,
-    Callback = function(Value) cfSpeedEnabled = Value end,
-}, "ToggleCF")
+    Callback = function(Value) setVelocity(Value) end,
+}, "ToggleVelocity")
 
 SpeedGroup:CreateToggle({
     Name = "Toggle TP Walk",
@@ -93,15 +134,15 @@ SpeedGroup:CreateSlider({
 }, "TPSlider")
 
 SpeedGroup:CreateSlider({
-    Name = "CFrame Velocity",
-    Range = {0, 1000},
+    Name = "Velocity Speed",
+    Range = {0, 300},
     Increment = 1,
-    CurrentValue = 1000,
-    Callback = function(v) currentCFSpeed = v end,
-}, "CFSlider")
+    CurrentValue = 100,
+    Callback = function(v) currentVelocitySpeed = v end,
+}, "VelocitySlider")
 
 local JumpGroup = GroundTab:CreateGroupbox({
-    Name = "Jump Mods",
+    Name = "Jump & Noclip",
     Icon = NebulaIcons:GetIcon("vertical_align_top", "Material"),
     Column = 2,
 }, "JumpGroup")
@@ -127,6 +168,13 @@ JumpGroup:CreateToggle({
     Style = 2,
     Callback = function(Value) infJumpEnabled = Value end,
 }, "InfJumpToggle")
+
+JumpGroup:CreateToggle({
+    Name = "Noclip (Through Walls)",
+    CurrentValue = false,
+    Style = 2,
+    Callback = function(Value) setNoclip(Value) end,
+}, "NoclipToggle")
 
 -- ====================== EXTRAS TAB ======================
 local ExtrasTab = TabSection:CreateTab({
@@ -202,9 +250,7 @@ DupeGroup:CreateToggle({
     Name = "Auto-Dupe Toggle",
     CurrentValue = false,
     Style = 2,
-    Callback = function(Value)
-        dupeEnabled = Value
-    end,
+    Callback = function(Value) dupeEnabled = Value end,
 }, "DupeToggle")
 
 -- PROXIMITY
@@ -237,7 +283,13 @@ PromptGroup:CreateToggle({
     Callback = function(Value) instaPromptsEnabled = Value end,
 }, "InstaToggle")
 
+-- Respawn handlers
 LocalPlayer.CharacterAdded:Connect(function()
     task.wait(0.5)
     if tsunamiGod then SetGodmode(true) end
+    if noclipEnabled then setNoclip(true) end
+    if velocityEnabled then setVelocity(true) end
 end)
+
+print("✅ N4tur3 Hub loaded with Velocity + Noclip!")
+]])()
