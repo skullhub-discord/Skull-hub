@@ -1,1 +1,244 @@
-# Skull-hub
+# N4tur3-Hub
+local Starlight = loadstring(game:HttpGet("https://raw.nebulasoftworks.xyz/starlight"))()
+local NebulaIcons = loadstring(game:HttpGet("https://raw.nebulasoftworks.xyz/nebula-icon-library-loader"))()
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local Window = Starlight:CreateWindow({
+    Name = "N4tur3 Hub ⛰️",
+    Subtitle = "Escape Tsunami for Cars 🏎️💨",
+    Icon = NebulaIcons:GetIcon("forest", "Material"),
+
+    LoadingSettings = {
+        Title = "N4tur3 Hub is loading!",
+        Subtitle = "Optimizing for Escape Tsunami for Cars...",
+    },
+
+    FileSettings = {
+        ConfigFolder = "MyScript"
+    },
+})
+
+-- ====================== MOVEMENT TAB ======================
+local TabSection = Window:CreateTabSection("Movement")
+local GroundTab = TabSection:CreateTab({
+    Name = "Movement",
+    Icon = NebulaIcons:GetIcon('directions_walk', 'Material'),
+    Columns = 2,
+}, "GroundTab")
+
+local cfSpeedEnabled = false
+local tpWalkEnabled = false
+local jumpEnabled = false
+local infJumpEnabled = false
+
+local currentCFSpeed = 1000
+local currentTPIncrement = 150 
+local currentJumpPower = 500
+
+RunService.Heartbeat:Connect(function()
+    local char = LocalPlayer.Character
+    local root = char and char:FindFirstChild("HumanoidRootPart")
+    local hum = char and char:FindFirstChild("Humanoid")
+    
+    if root and hum then
+        if cfSpeedEnabled and hum.MoveDirection.Magnitude > 0 then
+            root.CFrame = root.CFrame + (hum.MoveDirection * (currentCFSpeed / 100))
+        end
+        if tpWalkEnabled and hum.MoveDirection.Magnitude > 0 then
+            root.CFrame = root.CFrame + (hum.MoveDirection * currentTPIncrement)
+        end
+        if jumpEnabled then
+            hum.UseJumpPower = true
+            hum.JumpPower = currentJumpPower
+        end
+    end
+end)
+
+UserInputService.JumpRequest:Connect(function()
+    if infJumpEnabled then
+        local char = LocalPlayer.Character
+        local hum = char and char:FindFirstChild("Humanoid")
+        if hum then hum:ChangeState(Enum.HumanoidStateType.Jumping) end
+    end
+end)
+
+local SpeedGroup = GroundTab:CreateGroupbox({
+    Name = "Speed Settings",
+    Icon = NebulaIcons:GetIcon('bolt', 'Material'),
+    Column = 1,
+}, "SpeedGroup")
+
+SpeedGroup:CreateToggle({
+    Name = "Toggle CFrame Speed",
+    CurrentValue = false,
+    Style = 2,
+    Callback = function(Value) cfSpeedEnabled = Value end,
+}, "ToggleCF")
+
+SpeedGroup:CreateToggle({
+    Name = "Toggle TP Walk",
+    CurrentValue = false,
+    Style = 2,
+    Callback = function(Value) tpWalkEnabled = Value end,
+}, "ToggleTP")
+
+SpeedGroup:CreateSlider({
+    Name = "TP Walk Studs",
+    Range = {0, 500}, 
+    Increment = 5,
+    CurrentValue = 150,
+    Callback = function(v) currentTPIncrement = v end,
+}, "TPSlider")
+
+SpeedGroup:CreateSlider({
+    Name = "CFrame Velocity",
+    Range = {0, 1000},
+    Increment = 1,
+    CurrentValue = 1000,
+    Callback = function(v) currentCFSpeed = v end,
+}, "CFSlider")
+
+local JumpGroup = GroundTab:CreateGroupbox({
+    Name = "Jump Mods",
+    Icon = NebulaIcons:GetIcon("vertical_align_top", "Material"),
+    Column = 2,
+}, "JumpGroup")
+
+JumpGroup:CreateToggle({
+    Name = "Toggle Jump Power",
+    CurrentValue = false,
+    Style = 2,
+    Callback = function(Value) jumpEnabled = Value end,
+}, "ToggleJump")
+
+JumpGroup:CreateSlider({
+    Name = "Jump Power Value",
+    Range = {0, 500},
+    Increment = 1,
+    CurrentValue = 500,
+    Callback = function(v) currentJumpPower = v end,
+}, "JumpSlider")
+
+JumpGroup:CreateToggle({
+    Name = "Infinite Jump",
+    CurrentValue = false,
+    Style = 2,
+    Callback = function(Value) infJumpEnabled = Value end,
+}, "InfJumpToggle")
+
+-- ====================== EXTRAS TAB ======================
+local ExtrasTab = TabSection:CreateTab({
+    Name = "Extras",
+    Icon = NebulaIcons:GetIcon("settings", "Material"),
+    Columns = 1,
+}, "ExtrasTab")
+
+-- Godmode
+local GodGroup = ExtrasTab:CreateGroupbox({
+    Name = "Ultimate Godmode",
+    Icon = NebulaIcons:GetIcon("shield", "Material"),
+    Column = 1,
+}, "GodGroup")
+
+local tsunamiGod = false
+local godConnection
+
+local function SetGodmode(state)
+    tsunamiGod = state
+    if godConnection then godConnection:Disconnect() end
+    if state then
+        godConnection = RunService.Stepped:Connect(function()
+            if LocalPlayer.Character then
+                for _, part in ipairs(LocalPlayer.Character:GetDescendants()) do
+                    if part:IsA("BasePart") then part.CanTouch = false end
+                end
+                local hum = LocalPlayer.Character:FindFirstChild("Humanoid")
+                if hum then hum.Health = math.huge end
+            end
+        end)
+    else
+        if LocalPlayer.Character then
+            for _, part in ipairs(LocalPlayer.Character:GetDescendants()) do
+                if part:IsA("BasePart") then part.CanTouch = true end
+            end
+        end
+    end
+end
+
+GodGroup:CreateToggle({
+    Name = "Tsunami Godmode",
+    CurrentValue = false,
+    Style = 2,
+    Callback = function(Value) SetGodmode(Value) end,
+}, "TsunamiGod")
+
+-- Item Duplicator
+local DupeGroup = ExtrasTab:CreateGroupbox({
+    Name = "Item Duplicator",
+    Icon = NebulaIcons:GetIcon("content_copy", "Material"),
+    Column = 1,
+}, "DupeGroup")
+
+local dupeEnabled = false
+
+task.spawn(function()
+    while true do
+        if dupeEnabled then
+            local char = LocalPlayer.Character
+            local tool = char and char:FindFirstChildOfClass("Tool")
+            if tool then
+                tool.Parent = LocalPlayer.Backpack
+                task.wait(0.01)
+                tool.Parent = char
+            end
+        end
+        task.wait(0.05)
+    end
+end)
+
+DupeGroup:CreateToggle({
+    Name = "Auto-Dupe Toggle",
+    CurrentValue = false,
+    Style = 2,
+    Callback = function(Value)
+        dupeEnabled = Value
+    end,
+}, "DupeToggle")
+
+-- PROXIMITY
+local PromptGroup = ExtrasTab:CreateGroupbox({
+    Name = "Proximity Settings",
+    Icon = NebulaIcons:GetIcon("ads_click", "Material"),
+    Column = 1,
+}, "PromptGroup")
+
+local instaPromptsEnabled = false
+
+task.spawn(function()
+    while true do
+        if instaPromptsEnabled then
+            for _, prompt in ipairs(workspace:GetDescendants()) do
+                if prompt:IsA("ProximityPrompt") then
+                    prompt.HoldDuration = 0
+                    prompt.RequiresLineOfSight = false
+                end
+            end
+        end
+        task.wait(0.5)
+    end
+end)
+
+PromptGroup:CreateToggle({
+    Name = "Insta Proximity Prompts",
+    CurrentValue = false,
+    Style = 2,
+    Callback = function(Value) instaPromptsEnabled = Value end,
+}, "InstaToggle")
+
+LocalPlayer.CharacterAdded:Connect(function()
+    task.wait(0.5)
+    if tsunamiGod then SetGodmode(true) end
+end)
