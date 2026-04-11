@@ -39,11 +39,12 @@ local flyEnabled = false
 local currentCFSpeed = 1000
 local currentTPIncrement = 150 
 local currentJumpPower = 500
-local flySpeed = 50
+local flySpeed = 80
 
 local noclipConnection
 local flyConnection
 local flyBodyVelocity
+local flyBodyGyro
 
 local function setNoclip(state)
     noclipEnabled = state
@@ -82,7 +83,7 @@ local function setInfZoom(state)
     end
 end
 
--- Smooth Fly (Mobile + PC Friendly)
+-- ====================== SMOOTH FLUID FLY (FIXED) ======================
 local function setFly(state)
     flyEnabled = state
     local char = LocalPlayer.Character
@@ -90,45 +91,51 @@ local function setFly(state)
     local hum = char and char:FindFirstChild("Humanoid")
     
     if flyBodyVelocity then flyBodyVelocity:Destroy() end
+    if flyBodyGyro then flyBodyGyro:Destroy() end
+    if flyConnection then flyConnection:Disconnect() end
     
-    if state and root then
+    if state and root and hum then
         hum.PlatformStand = true
+        
         flyBodyVelocity = Instance.new("BodyVelocity")
         flyBodyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
         flyBodyVelocity.Velocity = Vector3.new(0,0,0)
         flyBodyVelocity.Parent = root
         
+        flyBodyGyro = Instance.new("BodyGyro")
+        flyBodyGyro.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+        flyBodyGyro.P = 9000
+        flyBodyGyro.CFrame = root.CFrame 
+        flyBodyGyro.Parent = root
+        
         flyConnection = RunService.Heartbeat:Connect(function()
-            if not flyBodyVelocity or not root then return end
+            if not root or not flyBodyVelocity then return end
             
             local cam = workspace.CurrentCamera
-            local moveDir = hum.MoveDirection  -- Works perfectly with mobile thumbstick + PC WASD
-            
-            local forward = cam.CFrame.LookVector
-            local right = cam.CFrame.RightVector
-            
-            local velocity = Vector3.new(0, 0, 0)
+            local moveDir = hum.MoveDirection 
             
             if moveDir.Magnitude > 0 then
-                velocity = (forward * moveDir.Z + right * moveDir.X) * flySpeed
+                -- Calculate 3D velocity based on camera look direction
+                -- Looking UP + Moving FORWARD = Flying UP
+                local cameraAdjustedDir = cam.CFrame.LookVector * -moveDir.Z + cam.CFrame.RightVector * moveDir.X
+                flyBodyVelocity.Velocity = cameraAdjustedDir.Unit * flySpeed
+                
+                -- Rotate character horizontally to face movement direction (Smooth)
+                local lookAt = cam.CFrame.LookVector
+                flyBodyGyro.CFrame = CFrame.lookAt(root.Position, root.Position + Vector3.new(lookAt.X, 0, lookAt.Z))
+            else
+                flyBodyVelocity.Velocity = Vector3.new(0, 0, 0)
             end
-            
-            -- Up/Down with Space / Shift (PC) or extra mobile support via JumpRequest if needed
-            if UserInputService:IsKeyDown(Enum.KeyCode.Space) then
-                velocity = velocity + Vector3.new(0, flySpeed, 0)
-            elseif UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then
-                velocity = velocity - Vector3.new(0, flySpeed, 0)
-            end
-            
-            flyBodyVelocity.Velocity = velocity
         end)
     else
-        if flyConnection then flyConnection:Disconnect() end
         if hum then hum.PlatformStand = false end
         if flyBodyVelocity then flyBodyVelocity:Destroy() end
+        if flyBodyGyro then flyBodyGyro:Destroy() end
+        if flyConnection then flyConnection:Disconnect() end
     end
 end
 
+-- ====================== LOOPS ======================
 RunService.Heartbeat:Connect(function()
     local char = LocalPlayer.Character
     local root = char and char:FindFirstChild("HumanoidRootPart")
@@ -156,214 +163,44 @@ UserInputService.JumpRequest:Connect(function()
     end
 end)
 
-local SpeedGroup = GroundTab:CreateGroupbox({
-    Name = "Speed Settings",
-    Icon = NebulaIcons:GetIcon('bolt', 'Material'),
-    Column = 1,
-}, "SpeedGroup")
+-- ====================== UI SETUP ======================
+local SpeedGroup = GroundTab:CreateGroupbox({ Name = "Speed Settings", Icon = NebulaIcons:GetIcon('bolt', 'Material'), Column = 1 }, "SpeedGroup")
 
-SpeedGroup:CreateToggle({
-    Name = "Toggle CFrame Speed",
-    CurrentValue = false,
-    Style = 2,
-    Callback = function(Value) cfSpeedEnabled = Value end,
-}, "ToggleCF")
+SpeedGroup:CreateToggle({ Name = "Toggle CFrame Speed", CurrentValue = false, Style = 2, Callback = function(Value) cfSpeedEnabled = Value end }, "ToggleCF")
+SpeedGroup:CreateToggle({ Name = "Toggle TP Walk", CurrentValue = false, Style = 2, Callback = function(Value) tpWalkEnabled = Value end }, "ToggleTP")
+SpeedGroup:CreateSlider({ Name = "TP Walk Studs", Range = {0, 500}, Increment = 5, CurrentValue = 150, Callback = function(v) currentTPIncrement = v end }, "TPSlider")
+SpeedGroup:CreateSlider({ Name = "CFrame Velocity", Range = {0, 1000}, Increment = 1, CurrentValue = 1000, Callback = function(v) currentCFSpeed = v end }, "CFSlider")
 
-SpeedGroup:CreateToggle({
-    Name = "Toggle TP Walk",
-    CurrentValue = false,
-    Style = 2,
-    Callback = function(Value) tpWalkEnabled = Value end,
-}, "ToggleTP")
+local JumpGroup = GroundTab:CreateGroupbox({ Name = "Jump & Fly", Icon = NebulaIcons:GetIcon("vertical_align_top", "Material"), Column = 2 }, "JumpGroup")
 
-SpeedGroup:CreateSlider({
-    Name = "TP Walk Studs",
-    Range = {0, 500}, 
-    Increment = 5,
-    CurrentValue = 150,
-    Callback = function(v) currentTPIncrement = v end,
-}, "TPSlider")
+JumpGroup:CreateToggle({ Name = "Toggle Jump Power", CurrentValue = false, Style = 2, Callback = function(Value) jumpEnabled = Value end }, "ToggleJump")
+JumpGroup:CreateSlider({ Name = "Jump Power Value", Range = {0, 500}, Increment = 1, CurrentValue = 500, Callback = function(v) currentJumpPower = v end }, "JumpSlider")
+JumpGroup:CreateToggle({ Name = "Infinite Jump", CurrentValue = false, Style = 2, Callback = function(Value) infJumpEnabled = Value end }, "InfJumpToggle")
+JumpGroup:CreateToggle({ Name = "Noclip (Through Walls)", CurrentValue = false, Style = 2, Callback = function(Value) setNoclip(Value) end }, "NoclipToggle")
+JumpGroup:CreateToggle({ Name = "Infinite Zoom", CurrentValue = false, Style = 2, Callback = function(Value) setInfZoom(Value) end }, "InfZoomToggle")
 
-SpeedGroup:CreateSlider({
-    Name = "CFrame Velocity",
-    Range = {0, 1000},
-    Increment = 1,
-    CurrentValue = 1000,
-    Callback = function(v) currentCFSpeed = v end,
-}, "CFSlider")
-
-local JumpGroup = GroundTab:CreateGroupbox({
-    Name = "Jump & Fly",
-    Icon = NebulaIcons:GetIcon("vertical_align_top", "Material"),
-    Column = 2,
-}, "JumpGroup")
-
-JumpGroup:CreateToggle({
-    Name = "Toggle Jump Power",
-    CurrentValue = false,
-    Style = 2,
-    Callback = function(Value) jumpEnabled = Value end,
-}, "ToggleJump")
-
-JumpGroup:CreateSlider({
-    Name = "Jump Power Value",
-    Range = {0, 500},
-    Increment = 1,
-    CurrentValue = 500,
-    Callback = function(v) currentJumpPower = v end,
-}, "JumpSlider")
-
-JumpGroup:CreateToggle({
-    Name = "Infinite Jump",
-    CurrentValue = false,
-    Style = 2,
-    Callback = function(Value) infJumpEnabled = Value end,
-}, "InfJumpToggle")
-
-JumpGroup:CreateToggle({
-    Name = "Noclip (Through Walls)",
-    CurrentValue = false,
-    Style = 2,
-    Callback = function(Value) setNoclip(Value) end,
-}, "NoclipToggle")
-
-JumpGroup:CreateToggle({
-    Name = "Infinite Zoom",
-    CurrentValue = false,
-    Style = 2,
-    Callback = function(Value) setInfZoom(Value) end,
-}, "InfZoomToggle")
-
--- Fly Toggle (Freedom style)
-JumpGroup:CreateToggle({
-    Name = "Fly (Mobile + PC)",
-    CurrentValue = false,
-    Style = 2,
-    Callback = function(Value) setFly(Value) end,
+JumpGroup:CreateToggle({ 
+    Name = "Fly (Mobile Friendly)", 
+    CurrentValue = false, 
+    Style = 2, 
+    Callback = function(Value) setFly(Value) end 
 }, "FlyToggle")
 
-JumpGroup:CreateSlider({
-    Name = "Fly Speed",
-    Range = {10, 150},
-    Increment = 1,
-    CurrentValue = 50,
-    Callback = function(v) flySpeed = v end,
+JumpGroup:CreateSlider({ 
+    Name = "Fly Speed", 
+    Range = {20, 150}, 
+    Increment = 1, 
+    CurrentValue = 80, 
+    Callback = function(v) flySpeed = v end 
 }, "FlySpeedSlider")
-
--- ====================== EXTRAS TAB ======================
-local ExtrasTab = TabSection:CreateTab({
-    Name = "Extras",
-    Icon = NebulaIcons:GetIcon("settings", "Material"),
-    Columns = 1,
-}, "ExtrasTab")
-
-local GodGroup = ExtrasTab:CreateGroupbox({
-    Name = "Ultimate Godmode",
-    Icon = NebulaIcons:GetIcon("shield", "Material"),
-    Column = 1,
-}, "GodGroup")
-
-local tsunamiGod = false
-local godConnection
-
-local function SetGodmode(state)
-    tsunamiGod = state
-    if godConnection then godConnection:Disconnect() end
-    if state then
-        godConnection = RunService.Stepped:Connect(function()
-            if LocalPlayer.Character then
-                for _, part in ipairs(LocalPlayer.Character:GetDescendants()) do
-                    if part:IsA("BasePart") then part.CanTouch = false end
-                end
-                local hum = LocalPlayer.Character:FindFirstChild("Humanoid")
-                if hum then hum.Health = math.huge end
-            end
-        end)
-    else
-        if LocalPlayer.Character then
-            for _, part in ipairs(LocalPlayer.Character:GetDescendants()) do
-                if part:IsA("BasePart") then part.CanTouch = true end
-            end
-        end
-    end
-end
-
-GodGroup:CreateToggle({
-    Name = "Tsunami Godmode",
-    CurrentValue = false,
-    Style = 2,
-    Callback = function(Value) SetGodmode(Value) end,
-}, "TsunamiGod")
-
--- (Dupe + Proximity unchanged - kept clean)
-
-local DupeGroup = ExtrasTab:CreateGroupbox({
-    Name = "Item Duplicator",
-    Icon = NebulaIcons:GetIcon("content_copy", "Material"),
-    Column = 1,
-}, "DupeGroup")
-
-local dupeEnabled = false
-
-task.spawn(function()
-    while true do
-        if dupeEnabled then
-            local char = LocalPlayer.Character
-            local tool = char and char:FindFirstChildOfClass("Tool")
-            if tool then
-                tool.Parent = LocalPlayer.Backpack
-                task.wait(0.01)
-                tool.Parent = char
-            end
-        end
-        task.wait(0.05)
-    end
-end)
-
-DupeGroup:CreateToggle({
-    Name = "Auto-Dupe Toggle",
-    CurrentValue = false,
-    Style = 2,
-    Callback = function(Value) dupeEnabled = Value end,
-}, "DupeToggle")
-
-local PromptGroup = ExtrasTab:CreateGroupbox({
-    Name = "Proximity Settings",
-    Icon = NebulaIcons:GetIcon("ads_click", "Material"),
-    Column = 1,
-}, "PromptGroup")
-
-local instaPromptsEnabled = false
-
-task.spawn(function()
-    while true do
-        if instaPromptsEnabled then
-            for _, prompt in ipairs(workspace:GetDescendants()) do
-                if prompt:IsA("ProximityPrompt") then
-                    prompt.HoldDuration = 0
-                    prompt.RequiresLineOfSight = false
-                end
-            end
-        end
-        task.wait(0.5)
-    end
-end)
-
-PromptGroup:CreateToggle({
-    Name = "Insta Proximity Prompts",
-    CurrentValue = false,
-    Style = 2,
-    Callback = function(Value) instaPromptsEnabled = Value end,
-}, "InstaToggle")
 
 -- Respawn support
 LocalPlayer.CharacterAdded:Connect(function()
     task.wait(0.5)
-    if tsunamiGod then SetGodmode(true) end
     if noclipEnabled then setNoclip(true) end
     if infZoomEnabled then setInfZoom(true) end
     if flyEnabled then setFly(true) end
 end)
 
-print("✅ N4tur3 Hub loaded with Mobile Fly!")
+print("✅ N4tur3 Hub - Fluid Mobile Fly Integrated!")
 ]])()
