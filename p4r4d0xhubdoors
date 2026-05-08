@@ -52,7 +52,7 @@ local Objects = {
 Globals.IncompatibleMessage = "Your executor doesn't support this feature."
 Functions.CheckCompatability = function(Array)
     local Valid = true
-    for Index, Name in pairs(Array) do
+    for Index, Name in (Array) do
         if not Abysall.Environment[Name] then
             Valid = false
         end
@@ -369,7 +369,7 @@ function NotificationLibrary:Notify(TitleText, Desc, Delay)
 		Services.TweenService:Create(Notification, TweenInfo.new(0.75, Enum.EasingStyle.Exponential, Enum.EasingDirection.In), {Position = UDim2.new(1, 5, 0, Notification.Position.Y.Offset)}):Play()
 		NotificationLibrary.LiveNotifications = NotificationLibrary.LiveNotifications - 1
         
-        for Index, Object in pairs(Container:GetChildren()) do
+        for Index, Object in (Container:GetChildren()) do
             if Object.Name == "Notification" and Object:GetAttribute("ID") and Object:GetAttribute("ID") > Notification:GetAttribute("ID") and Object:GetAttribute("Destroying") ~= true and Object.Position.Y.Offset ~= 60 then
                 Object:SetAttribute("CurrentPosition", UDim2.new(1, -450, 0, Object:GetAttribute("CurrentPosition").Y.Offset - 60))
                 Services.TweenService:Create(Object, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {Position = UDim2.new(1, -370, 0, Object:GetAttribute("CurrentPosition").Y.Offset)}):Play()
@@ -424,7 +424,7 @@ Functions.Caption = function(Text, PlaySound)
 	Caption.Destroying:Connect(function()
         CaptionValue:Destroy()
     end)
-    for Index, Child in pairs(Globals.MainUI:GetChildren()) do
+    for Index, Child in (Globals.MainUI:GetChildren()) do
 		if Child.Name == "LiveCaption" then
 			Child:Destroy()
 		end
@@ -528,7 +528,7 @@ FakeEvents.Surge_Real = RemotesFolder:FindFirstChild("SurgeRemote")
 
 Globals.FogInstances = {}
 Globals.OldFog = Services.Lighting.FogEnd
-for Index, Object in pairs(Services.Lighting:GetChildren()) do
+for Index, Object in (Services.Lighting:GetChildren()) do
     if Object:IsA("Atmosphere") then
         Object:SetAttribute("Density_Old", Object.Density)
 
@@ -617,7 +617,7 @@ Functions.GetPlayerFromMouse = function(TargetPart, MaxDistance)
     local Closest
     local ClosestDistance = math.huge
 
-    for Index, Player in pairs(Services.Players:GetPlayers()) do
+    for Index, Player in (Services.Players:GetPlayers()) do
         local Character = Player.Character
 
             local Target = Character and Character:FindFirstChild(TargetPart)
@@ -656,7 +656,7 @@ Functions.GetNearestEntity = function(CheckDisabled, List, UseRaycasting)
 		["CustomEntity"] = 85,
 	}
 
-    for Index, Entity in pairs(Services.Workspace:GetChildren()) do
+    for Index, Entity in (Services.Workspace:GetChildren()) do
         if Entity and EntityDistances[Entity.Name] and Entity.PrimaryPart then
             local EntityData = Entities[Entity.Name]
             if List and not List[EntityData.Alias] or not List then
@@ -679,7 +679,7 @@ Functions.GetNearestFigure = function()
         Object = nil
     }
 
-    for Index, Object in pairs(Objects.Entities) do
+    for Index, Object in (Objects.Entities) do
         if Object.PrimaryPart then
             local Distance = LocalPlayer:DistanceFromCharacter(Object.PrimaryPart.Position)
             if Object.Name == "FigureRig" and Distance < Nearest.Distance or Object.Name == "FigureRagdoll" and Distance < Nearest.Distance or Object.Name == "Figure" and Distance < Nearest.Distance then
@@ -699,7 +699,7 @@ Functions.GetNearestHidingSpot = function()
         Object = nil
     }
 
-    for Index, Object in pairs(Objects.HidingSpots) do
+    for Index, Object in (Objects.HidingSpots) do
         if Object.PrimaryPart and Object:FindFirstChild("HidePrompt") then
             local Distance = LocalPlayer:DistanceFromCharacter(Object.PrimaryPart.Position)
             if Distance < Object.HidePrompt.MaxActivationDistance and Distance < Nearest.Distance then
@@ -719,7 +719,7 @@ Functions.GetNearestTurnNode = function()
         Object = nil
     }
 
-    for Index, Node in pairs(Objects.SeekNodes) do
+    for Index, Node in (Objects.SeekNodes) do
         local Distance = LocalPlayer:DistanceFromCharacter(Node.Position)
         if Distance < Options.AutoSteerMinecartTurnDistance.Value and Distance < Nearest.Distance then
             Nearest.Distance = Distance
@@ -735,7 +735,7 @@ Functions.GetNearestDuckBoard = function()
         Object = nil
     }
 
-    for Index, Board in pairs(Objects.SeekDuckBoards) do
+    for Index, Board in (Objects.SeekDuckBoards) do
         if Board.PrimaryPart then
             local Distance = LocalPlayer:DistanceFromCharacter(Board.PrimaryPart.Position)
             if Distance < Options.AutoSteerMinecartDuckDistance.Value and Distance < Nearest.Distance then
@@ -748,7 +748,7 @@ Functions.GetNearestDuckBoard = function()
 end
 
 Functions.GetCurrentAnchor = function()
-    for Index, Anchor in pairs(Objects.Objectives) do
+    for Index, Anchor in (Objects.Objectives) do
         if Anchor.Name == "MinesAnchor" and Anchor:FindFirstChild("Sign") then
             if Anchor.Sign.TextLabel.Text == Globals.MainUI.AnchorHintFrame.AnchorCode.Text then
                 return Anchor
@@ -847,8 +847,8 @@ Functions.GetLibraryCode = function()
         if Floor == "Fools" then
             Code = {"_", "_", "_", "_", "_", "_", "_", "_", "_", "_"}
         end
-        for Index, Object in pairs(LocalPlayer.PlayerGui.PermUI.Hints:GetChildren()) do
-            for Index2, Object2 in pairs(Paper.UI:GetChildren()) do
+        for Index, Object in (LocalPlayer.PlayerGui.PermUI.Hints:GetChildren()) do
+            for Index2, Object2 in (Paper.UI:GetChildren()) do
                 if Object:IsA("ImageLabel") and Object2:IsA("ImageLabel") and Object.ImageRectOffset == Object2.ImageRectOffset and Code[tonumber(Object2.Name)] then
                     Code[tonumber(Object2.Name)] = Object.TextLabel.Text
                 end
@@ -860,8 +860,8 @@ Functions.GetLibraryCode = function()
 end
 
 local Window = Library:CreateWindow({
-    Title = "P4r4d0x Hub",
-    Footer = "P4r4d0x Hub - Beta | Doors",
+    Title = "Abysall Hub",
+    Footer = "Abysall Hub - Beta | Doors",
     NotifySide = "Right",
     ShowCustomCursor = false,
     AutoShow = true,
@@ -946,7 +946,7 @@ Toggles.NoclipToggle:AddKeyPicker("NoclipKeybind", {
 })
 
 Toggles.RemoveAcceleration:OnChanged(function(Value)
-    for Index, Old in pairs(PartProperties) do
+    for Index, Old in (PartProperties) do
         Index.CustomPhysicalProperties = (Value and CustomPhysics or Old)
     end
 end)
@@ -1008,7 +1008,7 @@ Groupboxes.General_Self:AddToggle("DisableIdleKick", {
 
 Toggles.DisableIdleKick:OnChanged(function(Value)
     if Functions.CheckCompatability({"getconnections"}) then
-        for Index, Connection in pairs(Abysall.Environment.getconnections(LocalPlayer.Idled)) do
+        for Index, Connection in (Abysall.Environment.getconnections(LocalPlayer.Idled)) do
             if Value then
                 Connection:Disable()
             else
@@ -1048,19 +1048,19 @@ Groupboxes.General_Self:AddToggle("PromptClip", {
     Tooltip = "Allows you to interact with prompts through walls."
 })
 Options.PromptReachSlider:OnChanged(function(Value)
-    for Index, Prompt in pairs(Objects.Prompts) do
+    for Index, Prompt in (Objects.Prompts) do
         Prompt.MaxActivationDistance = Prompt:GetAttribute("MaxActivationDistance_Old") * Options.PromptReachSlider.Value
     end
 end)
 
 Toggles.InstantPrompts:OnChanged(function(Value)
-    for Index, Prompt in pairs(Objects.Prompts) do
+    for Index, Prompt in (Objects.Prompts) do
         Prompt.HoldDuration = (Value and 0 or Prompt:GetAttribute("HoldDuration_Old"))
     end
 end)
 
 Toggles.PromptClip:OnChanged(function(Value)
-    for Index, Prompt in pairs(Objects.Prompts) do
+    for Index, Prompt in (Objects.Prompts) do
         Prompt.RequiresLineOfSight = (Value and false or Prompt:GetAttribute("RequiresLineOfSight_Old"))
     end
 end)
@@ -1303,7 +1303,7 @@ Groupboxes.Exploits_Bypass:AddToggle("BypassJeff", {
 })
 
 Toggles.BypassGiggle:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.Entities) do
+    for Index, Object in (Objects.Entities) do
         if Object.Name == "GiggleCeiling" then
             Object:WaitForChild("Hitbox").CanTouch = not Value
         end
@@ -1311,7 +1311,7 @@ Toggles.BypassGiggle:OnChanged(function(Value)
 end)
 
 Toggles.BypassDupe:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.Entities) do
+    for Index, Object in (Objects.Entities) do
         if Object.Name == "DoorFake" or Object.Name == "FakeDoor" then
             Object:WaitForChild("Hidden").CanTouch = not Value
             if Object:FindFirstChild("Lock") then
@@ -1342,8 +1342,8 @@ Toggles.BypassLookman:OnChanged(function(Value)
 end)
 
 Toggles.BypassGloombatEggs:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.Entities) do
-        for Index2, Object2 in pairs(Object:GetDescendants()) do
+    for Index, Object in (Objects.Entities) do
+        for Index2, Object2 in (Object:GetDescendants()) do
             if Object2:IsA("BasePart") then
                 Object2.CanTouch = not Value
             end
@@ -1352,20 +1352,20 @@ Toggles.BypassGloombatEggs:OnChanged(function(Value)
 end)
 
 Toggles.BypassSeekObstructions:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.SeekObstructions) do
+    for Index, Object in (Objects.SeekObstructions) do
         Object.CanTouch = not Value
         if Object.Name == "SeekFloodline" then
             Object.CanCollide = Value
         end
     end
-    for Index, Object in pairs(Objects.SeekBridges) do
+    for Index, Object in (Objects.SeekBridges) do
         Object.CanCollide = Value
         Object.Transparency = (Value and 0 or 1)
     end
 end)
 
 Toggles.BypassVacuum:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.Entities) do
+    for Index, Object in (Objects.Entities) do
         if Object.Name == "SideroomSpace" then
             Object:WaitForChild("Collision").CanCollide = Value
             Object:WaitForChild("Collision").CanTouch = not Value
@@ -1374,7 +1374,7 @@ Toggles.BypassVacuum:OnChanged(function(Value)
 end)
 
 Toggles.BypassKillbricks:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.Obstructions) do
+    for Index, Object in (Objects.Obstructions) do
         if Object.Name == "Lava" then
             Object.CanTouch = not Value
         end
@@ -1382,9 +1382,9 @@ Toggles.BypassKillbricks:OnChanged(function(Value)
 end)
 
 Toggles.BypassSeekingWall:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.Obstructions) do
+    for Index, Object in (Objects.Obstructions) do
         if Object.Name == "ScaryWall" then
-            for Index2, Object2 in pairs(Object:GetDescendants()) do
+            for Index2, Object2 in (Object:GetDescendants()) do
                 if Object2:IsA("BasePart") then
                     Object2.CanTouch = not Value
                     Object2.CanCollide = not Value
@@ -1395,7 +1395,7 @@ Toggles.BypassSeekingWall:OnChanged(function(Value)
 end)
 
 Toggles.BypassSnare:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.Entities) do
+    for Index, Object in (Objects.Entities) do
         if Object.Name == "Snare" and Object:FindFirstChild("Hitbox") then
             Object.Hitbox.CanTouch = not Value
         end
@@ -1403,7 +1403,7 @@ Toggles.BypassSnare:OnChanged(function(Value)
 end)
 
 Toggles.BypassBanana:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.Entities) do
+    for Index, Object in (Objects.Entities) do
         if Object.Name == "BananaPeel" then
             Object.CanTouch = not Value
         end
@@ -1411,9 +1411,9 @@ Toggles.BypassBanana:OnChanged(function(Value)
 end)
 
 Toggles.BypassJeff:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.Entities) do
+    for Index, Object in (Objects.Entities) do
         if Object.Name == "JeffTheKiller" then
-            for Index2, Object2 in pairs(Object:GetDescendants()) do
+            for Index2, Object2 in (Object:GetDescendants()) do
                 if Object2:IsA("BasePart") then
                     Object2.CanCollide = not Value
                     Object2.CanTouch = not Value
@@ -1777,7 +1777,7 @@ end)
 
 Toggles.RemoveCameraFog:OnChanged(function(Value)
     Services.Lighting.FogEnd = (Value and 10000000 or Globals.OldFog)
-    for Index, Object in pairs(Globals.FogInstances) do
+    for Index, Object in (Globals.FogInstances) do
         Object.Density = (Value and 0 or Object:GetAttribute("Density_Old"))
     end
 end)
@@ -1800,14 +1800,14 @@ Groupboxes.Visuals_Effects:AddSlider("TransparentHidingSpotsSlider", {
 })
 
 Toggles.TransparentHidingSpotsToggle:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.HidingSpots) do
+    for Index, Object in (Objects.HidingSpots) do
         local IsHiding = false
-        for Index2, Object2 in pairs(Object:GetDescendants()) do
+        for Index2, Object2 in (Object:GetDescendants()) do
             if Object2.Name == "HiddenPlayer" and Object2.Value == Character then
                 IsHiding = true
             end
         end
-        for Index3, Object3 in pairs(Object:GetDescendants()) do
+        for Index3, Object3 in (Object:GetDescendants()) do
             if Object3:IsA("BasePart") and Object3:GetAttribute("Transparency_Old") then
                 Services.TweenService:Create(Object3, TweenInfo.new(0.25, Enum.EasingStyle.Linear), {Transparency = (Value and IsHiding and Options.TransparentHidingSpotsSlider.Value or Object3:GetAttribute("Transparency_Old"))}):Play()
             end
@@ -1816,14 +1816,14 @@ Toggles.TransparentHidingSpotsToggle:OnChanged(function(Value)
 end)
 
 Options.TransparentHidingSpotsSlider:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.HidingSpots) do
+    for Index, Object in (Objects.HidingSpots) do
         local IsHiding = false
-        for Index2, Object2 in pairs(Object:GetDescendants()) do
+        for Index2, Object2 in (Object:GetDescendants()) do
             if Object2.Name == "HiddenPlayer" and Object2.Value == Character then
                 IsHiding = true
             end
         end
-        for Index3, Object3 in pairs(Object:GetDescendants()) do
+        for Index3, Object3 in (Object:GetDescendants()) do
             if Object3:IsA("BasePart") and Object3:GetAttribute("Transparency_Old") then
                 Services.TweenService:Create(Object3, TweenInfo.new(0.25, Enum.EasingStyle.Linear), {Transparency = (Toggles.TransparentHidingSpotsToggle.Value and IsHiding and Value or Object3:GetAttribute("Transparency_Old"))}):Play()
             end
@@ -1895,10 +1895,10 @@ Toggles.DisableHideVignette:OnChanged(function(Value)
 end)
 
 Toggles.DisableFiredampEffect:OnChanged(function(Value)
-    for Index, Object in pairs(CurrentRooms:GetChildren()) do
+    for Index, Object in (CurrentRooms:GetChildren()) do
         if Value then
             Object:SetAttribute("Firedamp", false)
-            for Index, Object in pairs(Camera:GetChildren()) do
+            for Index, Object in (Camera:GetChildren()) do
                 if Object.Name == "LiveFiredamp" then
                     Object:Destroy()
                 end
@@ -1918,7 +1918,7 @@ Toggles.DisableEntityJumpscares:OnChanged(function(Value)
     local Jumpscares = Globals.MainUI.Initiator.Main_Game.RemoteListener:FindFirstChild("Jumpscares") or Globals.MainUI.Initiator.Main_Game.RemoteListener:FindFirstChild("Jumpscares_Disabled")
         if Jumpscares then
         Jumpscares.Name = (Value and "Jumpscares_Disabled" or "Jumpscares")
-        for Index, Object in pairs(Objects.JumpscareModules) do
+        for Index, Object in (Objects.JumpscareModules) do
             Object.Name = (Value and Object:GetAttribute("OriginalName") .. "_Disabled" or Object:GetAttribute("OriginalName"))
         end
     end
@@ -2047,7 +2047,7 @@ Toggles.ObjectiveESPToggle:AddColorPicker("ObjectiveESPColor", {
 })
 
 Toggles.ObjectiveESPToggle:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.Objectives) do
+    for Index, Object in (Objects.Objectives) do
         if Value then
             if Object.Name == "KeyObtain" then
                 Functions.AddESP({
@@ -2135,7 +2135,7 @@ Toggles.ObjectiveESPToggle:OnChanged(function(Value)
 end)
 
 Options.ObjectiveESPColor:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.Objectives) do
+    for Index, Object in (Objects.Objectives) do
         Abysall.ESPLibrary:UpdateObjectColor(Object, Value)
     end
 end)
@@ -2153,7 +2153,7 @@ Toggles.DoorESPToggle:AddColorPicker("DoorESPColor", {
 })
 
 Toggles.DoorESPToggle:OnChanged(function(Value)
-     for Index, Object in pairs(Objects.Doors) do
+     for Index, Object in (Objects.Doors) do
         if Value then
             Functions.AddESP({
                 Object = Object,
@@ -2167,7 +2167,7 @@ Toggles.DoorESPToggle:OnChanged(function(Value)
 end)
 
 Options.DoorESPColor:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.Doors) do
+    for Index, Object in (Objects.Doors) do
         Abysall.ESPLibrary:UpdateObjectColor(Object, Value)
     end
 end)
@@ -2185,7 +2185,7 @@ Toggles.HidingSpotESPToggle:AddColorPicker("HidingSpotESPColor", {
 })
 
 Toggles.HidingSpotESPToggle:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.HidingSpots) do
+    for Index, Object in (Objects.HidingSpots) do
         if Value then
             if Object.Name == "Wardrobe" or Object.Name == "Backdoor_Wardrobe" or Object.Name == "Toolshed" or Object.Name == "RetroWardrobe" then
                 Functions.AddESP({
@@ -2231,7 +2231,7 @@ Toggles.HidingSpotESPToggle:OnChanged(function(Value)
 end)
 
 Options.HidingSpotESPColor:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.HidingSpots) do
+    for Index, Object in (Objects.HidingSpots) do
         Abysall.ESPLibrary:UpdateObjectColor(Object, Value)
     end
 end)
@@ -2250,7 +2250,7 @@ Toggles.PlayerESPToggle:AddColorPicker("PlayerESPColor", {
 
 Toggles.PlayerESPToggle:OnChanged(function(Value)
     task.wait()
-    for Index, Object in pairs(Services.Players:GetPlayers()) do
+    for Index, Object in (Services.Players:GetPlayers()) do
         if Object.Character and Object ~= LocalPlayer then
             if Value then
                 Functions.AddESP({
@@ -2266,7 +2266,7 @@ Toggles.PlayerESPToggle:OnChanged(function(Value)
 end)
 
 Options.PlayerESPColor:OnChanged(function(Value)
-    for Index, Object in pairs(Services.Players:GetPlayers()) do
+    for Index, Object in (Services.Players:GetPlayers()) do
         if Object.Character and Object ~= LocalPlayer then
             Abysall.ESPLibrary:UpdateObjectColor(Object.Character, Value)
         end
@@ -2286,7 +2286,7 @@ Toggles.ChestESPToggle:AddColorPicker("ChestESPColor", {
 })
 
 Toggles.ChestESPToggle:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.Chests) do
+    for Index, Object in (Objects.Chests) do
         if Value then
             if Object.Name == "ChestBox" or Object.Name == "ChestBoxLocked" then
                 Functions.AddESP({
@@ -2332,7 +2332,7 @@ Toggles.ChestESPToggle:OnChanged(function(Value)
 end)
 
 Options.ChestESPColor:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.Chests) do
+    for Index, Object in (Objects.Chests) do
         Abysall.ESPLibrary:UpdateObjectColor(Object, Value)
     end
 end)
@@ -2350,7 +2350,7 @@ Toggles.ItemESPToggle:AddColorPicker("ItemESPColor", {
 })
 
 Toggles.ItemESPToggle:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.Items) do
+    for Index, Object in (Objects.Items) do
         if Value then
             if ItemNames[Object.Name] then
                 Functions.AddESP({
@@ -2372,7 +2372,7 @@ Toggles.ItemESPToggle:OnChanged(function(Value)
 end)
 
 Options.ItemESPColor:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.Items) do
+    for Index, Object in (Objects.Items) do
         Abysall.ESPLibrary:UpdateObjectColor(Object, Value)
     end
 end)
@@ -2390,7 +2390,7 @@ Toggles.CurrencyESPToggle:AddColorPicker("CurrencyESPColor", {
 })
 
 Toggles.CurrencyESPToggle:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.Currency) do
+    for Index, Object in (Objects.Currency) do
         if Value then
             if Object.Name == "GoldPile" and Object:GetAttribute("GoldValue") then
                 Functions.AddESP({
@@ -2412,7 +2412,7 @@ Toggles.CurrencyESPToggle:OnChanged(function(Value)
 end)
 
 Options.CurrencyESPColor:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.Currency) do
+    for Index, Object in (Objects.Currency) do
         Abysall.ESPLibrary:UpdateObjectColor(Object, Value)
     end
 end)
@@ -2430,7 +2430,7 @@ Toggles.EntityESPToggle:AddColorPicker("EntityESPColor", {
 })
 
 Toggles.EntityESPToggle:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.Entities) do
+    for Index, Object in (Objects.Entities) do
         if Value then
             if Entities[Object.Name] then
                 local EntityData = Entities[Object.Name]
@@ -2513,7 +2513,7 @@ Toggles.EntityESPToggle:OnChanged(function(Value)
 end)
 
 Options.EntityESPColor:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.Entities) do
+    for Index, Object in (Objects.Entities) do
         Abysall.ESPLibrary:UpdateObjectColor(Object, Value)
     end
 end)
@@ -2531,7 +2531,7 @@ Toggles.LadderESPToggle:AddColorPicker("LadderESPColor", {
 })
 
 Toggles.LadderESPToggle:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.Ladders) do
+    for Index, Object in (Objects.Ladders) do
         if Value then
             Functions.AddESP({
                 Object = Object,
@@ -2545,7 +2545,7 @@ Toggles.LadderESPToggle:OnChanged(function(Value)
 end)
 
 Options.LadderESPColor:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.Ladders) do
+    for Index, Object in (Objects.Ladders) do
         Abysall.ESPLibrary:UpdateObjectColor(Object, Value)
     end
 end)
@@ -2876,7 +2876,7 @@ Groupboxes.Floors_Automation:AddToggle("RoomsAutoWalkShowPathToggle", {
 })
 
 Toggles.RoomsAutoWalk:OnChanged(function(Value)
-    for Index, Object in pairs(Globals.RoomsNodesFolder:GetChildren()) do
+    for Index, Object in (Globals.RoomsNodesFolder:GetChildren()) do
         if Object.Name == "PathNode" then
             Object:Destroy()
         end
@@ -2890,7 +2890,7 @@ Toggles.RoomsAutoWalkShowPathToggle:AddColorPicker("RoomsAutoWalkShowPathColor",
 })
 
 Toggles.RoomsAutoWalkShowPathToggle:OnChanged(function(Value)
-    for Index, Object in pairs(Globals.RoomsNodesFolder:GetChildren()) do
+    for Index, Object in (Globals.RoomsNodesFolder:GetChildren()) do
         if Object.Name == "PathNode" then
             Object.Transparency = (Value and 0.5 or 1)
         end
@@ -2898,7 +2898,7 @@ Toggles.RoomsAutoWalkShowPathToggle:OnChanged(function(Value)
 end)
 
 Options.RoomsAutoWalkShowPathColor:OnChanged(function(Value)
-    for Index, Object in pairs(Globals.RoomsNodesFolder:GetChildren()) do
+    for Index, Object in (Globals.RoomsNodesFolder:GetChildren()) do
         if Object.Name == "PathNode" then
             Object.Color = Value
         end
@@ -2913,7 +2913,7 @@ Functions.RoomsAutoWalk.GetNearestHidingSpot = function()
         Object = nil
     }
 
-    for Index, Object in pairs(Objects.HidingSpots) do
+    for Index, Object in (Objects.HidingSpots) do
         if Object.PrimaryPart and Object:FindFirstChild("HidePrompt") then
             local Distance = LocalPlayer:DistanceFromCharacter(Object.PrimaryPart.Position)
             if Distance < Nearest.Distance then
@@ -2937,7 +2937,7 @@ Functions.RoomsAutoWalk.GetPathfindTarget = function()
         "GlitchAmbush"
     }
 
-    for Index, Object in pairs(Services.Workspace:GetChildren()) do
+    for Index, Object in (Services.Workspace:GetChildren()) do
         if table.find(EntityList, Object.Name) and Object.PrimaryPart and Object.PrimaryPart.Position.Y > -10 and Object.PrimaryPart.Position.Y < 150 then
             if Object.Name == "A60" and not Toggles.RoomsAutoWalkIgnoreA60.Value or Object.Name ~= "A60" then
                 return Functions.RoomsAutoWalk.GetNearestHidingSpot() or CurrentRooms[tostring(LatestRoom.Value)]:FindFirstChild("RoomExit")
@@ -2973,7 +2973,7 @@ Connections.RoomsAutoWalkHandler = Services.RunService.RenderStepped:Connect(fun
             if TargetPart.Name == "RoomExit" then
                 TargetPosition = TargetPart.Position
             elseif TargetPart:FindFirstChild("HidePrompt") then
-                for Index, Object in pairs(TargetPart:GetDescendants()) do
+                for Index, Object in (TargetPart:GetDescendants()) do
                     if Object:IsA("BasePart") then
                         Object.CanCollide = false
                     end
@@ -2999,13 +2999,13 @@ Connections.RoomsAutoWalkHandler = Services.RunService.RenderStepped:Connect(fun
                 else
                     local Stuck = false
 
-                    for Index, Object in pairs(Globals.RoomsNodesFolder:GetChildren()) do
+                    for Index, Object in (Globals.RoomsNodesFolder:GetChildren()) do
                         if Object.Name == "PathNode" then
                             Object:Destroy()
                         end
                     end
 
-                    for Index, Waypoint in pairs(Path:GetWaypoints()) do
+                    for Index, Waypoint in (Path:GetWaypoints()) do
                         local Block = Instance.new("Part", Globals.RoomsNodesFolder)
                         Block.Transparency = (Toggles.RoomsAutoWalkShowPathToggle.Value and 0.5 or 1)
                         Block.Size = Vector3.new(1, 1, 1)
@@ -3018,7 +3018,7 @@ Connections.RoomsAutoWalkHandler = Services.RunService.RenderStepped:Connect(fun
                         Block.Material = Enum.Material.Neon
                     end
 
-                    for Index, Waypoint in pairs(Path:GetWaypoints()) do
+                    for Index, Waypoint in (Path:GetWaypoints()) do
                         if Stuck then
                             break
                         end
@@ -3074,7 +3074,7 @@ Connections.RoomsAutoWalkHandler = Services.RunService.RenderStepped:Connect(fun
 end)
 
 Connections.RoomsHandler = CurrentRooms.ChildAdded:Connect(function(Room)
-    for Index, Object in pairs(Globals.RoomsNodesFolder:GetChildren()) do
+    for Index, Object in (Globals.RoomsNodesFolder:GetChildren()) do
         if Object.Name == "StuckPart" then
             Object:Destroy()
         end
@@ -3142,7 +3142,7 @@ Connections.RoomsHandler = CurrentRooms.ChildAdded:Connect(function(Room)
 
                 Path:ComputeAsync(RootPart.Position, Room.RoomExit.Position)
                 if Path.Status == Enum.PathStatus.Success then
-                    for Index, Object in pairs(Path:GetWaypoints()) do
+                    for Index, Object in (Path:GetWaypoints()) do
                         CreateNode(Object)
                     end
                     Room:SetAttribute("PathFound", true)
@@ -3170,7 +3170,7 @@ Toggles.ShowSeekPathToggle:AddColorPicker("ShowSeekPathColor", {
 })
 
 Toggles.ShowSeekPathToggle:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.SeekHighlights) do
+    for Index, Object in (Objects.SeekHighlights) do
         Object.Transparency = NumberSequence.new({
 			NumberSequenceKeypoint.new(0, (Value and 0 or 1)),
 			NumberSequenceKeypoint.new(1, (Value and 0 or 1)),
@@ -3179,7 +3179,7 @@ Toggles.ShowSeekPathToggle:OnChanged(function(Value)
 end)
 
 Options.ShowSeekPathColor:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.SeekHighlights) do
+    for Index, Object in (Objects.SeekHighlights) do
         Object.Color = ColorSequence.new({
 			ColorSequenceKeypoint.new(0, Value),
 			ColorSequenceKeypoint.new(1, Value)
@@ -3202,7 +3202,7 @@ Toggles.ShowEyestalkPathToggle:AddColorPicker("ShowEyestalkPathColor", {
 })
 
 Toggles.ShowEyestalkPathToggle:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.EyestalkHighlights) do
+    for Index, Object in (Objects.EyestalkHighlights) do
         Object.Transparency = NumberSequence.new({
 			NumberSequenceKeypoint.new(0, (Value and 0 or 1)),
 			NumberSequenceKeypoint.new(1, (Value and 0 or 1)),
@@ -3211,7 +3211,7 @@ Toggles.ShowEyestalkPathToggle:OnChanged(function(Value)
 end)
 
 Options.ShowEyestalkPathColor:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.EyestalkHighlights) do
+    for Index, Object in (Objects.EyestalkHighlights) do
         Object.Color = ColorSequence.new({
 			ColorSequenceKeypoint.new(0, Value),
 			ColorSequenceKeypoint.new(1, Value)
@@ -3276,7 +3276,7 @@ Groupboxes.Floors_Bypass:AddToggle("RemoveSkeletonDoor", {
 })
 
 Toggles.RemoveBasementGate:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.Obstructions) do
+    for Index, Object in (Objects.Obstructions) do
         if Object.Name == "ThingToOpen" then
             Object:PivotTo(Value and CFrame.new(-10000,-10000,-10000) or Object:GetAttribute("OriginalPosition"))
         end
@@ -3284,7 +3284,7 @@ Toggles.RemoveBasementGate:OnChanged(function(Value)
 end)
 
 Toggles.RemovePaintingsDoor:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.Obstructions) do
+    for Index, Object in (Objects.Obstructions) do
         if Object.Name == "MovingDoor" then
             Object:PivotTo(Value and CFrame.new(-10000,-10000,-10000) or Object:GetAttribute("OriginalPosition"))
         end
@@ -3292,7 +3292,7 @@ Toggles.RemovePaintingsDoor:OnChanged(function(Value)
 end)
 
 Toggles.RemoveSkeletonDoor:OnChanged(function(Value)
-    for Index, Object in pairs(Objects.Obstructions) do
+    for Index, Object in (Objects.Obstructions) do
         if Object.Name == "Wax_Door" then
             Object:PivotTo(Value and CFrame.new(-10000,-10000,-10000) or Object:GetAttribute("OriginalPosition"))
         end
@@ -3354,7 +3354,7 @@ Functions.HandleCharacter = function(NewCharacter)
         "InfiniteJumpsConnection2"
     }
 
-    for Index, Name in pairs(OldConnections) do
+    for Index, Name in (OldConnections) do
         if table.find(OldConnections, Name) and Connections[Name] then
             Connections[Name]:Disconnect()
         end
@@ -3488,7 +3488,7 @@ Functions.HandleCharacter = function(NewCharacter)
     end
 
     CustomPhysics = PhysicalProperties.new(100, RootPart.CustomPhysicalProperties.Friction, RootPart.CustomPhysicalProperties.Elasticity, RootPart.CustomPhysicalProperties.FrictionWeight, RootPart.CustomPhysicalProperties.ElasticityWeight)
-    for Index, Part in pairs(NewCharacter:GetDescendants()) do
+    for Index, Part in (NewCharacter:GetDescendants()) do
         if Part:IsA("BasePart") then
             PartProperties[Part] = Part.CustomPhysicalProperties
             if Toggles.RemoveAcceleration.Value then
@@ -3530,7 +3530,7 @@ Functions.HandleCharacter = function(NewCharacter)
         if Character:GetAttribute("Oxygen") < Globals.OldOxygen and Toggles.NotifyOxygen.Value then
             Functions.Caption(Functions.FormatOxygen(Character:GetAttribute("Oxygen")), true)
         end
-        Globals.OldOxygen = Character:GetAttrivute("Oxygen")
+        Globals.OldOxygen = Character:GetAttribute("Oxygen")
     end)
 
     Connections.AutoReviveHandler = LocalPlayer:GetAttributeChangedSignal("Alive"):Connect(function()
@@ -3677,7 +3677,7 @@ Functions.HandleCharacter = function(NewCharacter)
 
     Globals.SelfKilled = false
     Globals.ThirdPersonParts = {}
-    for Index, Object in pairs(Character:GetDescendants()) do
+    for Index, Object in (Character:GetDescendants()) do
         if Object:IsA("Accessory") and Object:FindFirstChild("Handle") then
             table.insert(Globals.ThirdPersonParts, Object.Handle)
         end
@@ -3729,7 +3729,7 @@ Functions.HandleCharacter = function(NewCharacter)
             RootPart.CanCollide = false
         end
 
-        for Index, Part in pairs(Character:GetChildren()) do
+        for Index, Part in (Character:GetChildren()) do
             if Part:IsA("BasePart") then
                 Part.CanCollide = false
             end
@@ -3810,7 +3810,7 @@ Functions.HandleCharacter = function(NewCharacter)
 
         if tick() - Globals.LastAnimationCheck > 0.1 then
             local Sliding = false
-            for Index, Animation in pairs(Humanoid:GetPlayingAnimationTracks()) do
+            for Index, Animation in (Humanoid:GetPlayingAnimationTracks()) do
                 if Animation.Name == "Slide" then
                     Sliding = true
                 end
@@ -3824,7 +3824,7 @@ Functions.HandleCharacter = function(NewCharacter)
             Camera.CFrame = Camera.CFrame * CFrame.new(Options.ThirdPersonOffsetX.Value, Options.ThirdPersonOffsetY.Value, Options.ThirdPersonOffsetZ.Value)
         end
 
-        for Index, Part in pairs(Globals.ThirdPersonParts) do
+        for Index, Part in (Globals.ThirdPersonParts) do
             Part.Transparency = (Toggles.ThirdPersonToggle.Value and 0 or 1)
             Part.LocalTransparencyModifier = (Toggles.ThirdPersonToggle.Value and 0 or 1)
         end
@@ -3845,7 +3845,7 @@ Functions.HandleCharacter = function(NewCharacter)
             Distance = math.huge,
             Object = nil
         }
-        for Index, Player in pairs(Services.Players:GetPlayers()) do
+        for Index, Player in (Services.Players:GetPlayers()) do
             if Player.Character and Player ~= LocalPlayer then
                 local Root = Player.Character:FindFirstChild("HumanoidRootPart")
                 if Root then
@@ -3878,14 +3878,14 @@ end
 
 Functions.HandleHidingTransparency = function(Model)
     local Parts = {}
-    for Index, Part in pairs(Model:GetDescendants()) do
+    for Index, Part in (Model:GetDescendants()) do
         if Part:IsA("BasePart") then
             Part:SetAttribute("Transparency_Old", Part.Transparency)
             table.insert(Parts, Part)
         end
         if Part.Name == "HiddenPlayer" then
             local Connection = Part:GetPropertyChangedSignal("Value"):Connect(function()
-                for Index2, Part2 in pairs(Parts) do
+                for Index2, Part2 in (Parts) do
                     Services.TweenService:Create(Part2, TweenInfo.new(0.25, Enum.EasingStyle.Linear), {Transparency = (Part.Value == Character and Toggles.TransparentHidingSpotsToggle.Value and Options.TransparentHidingSpotsSlider.Value or Part2:GetAttribute("Transparency_Old"))}):Play()
                 end
             end)
@@ -3986,19 +3986,19 @@ Globals.AllowedInstances = {
 }
 
 Functions.HandleObject = function(Object)
-    if not Globals.AllowedInstances[Object.Name] and not Object:IsA("ProximityPrompt") and Object.Parent ~= CurrentRooms and not ItemNames[Object.Name] then
+    if not Globals.AllowedInstances[Object.Name] and Object.ClassName ~= "ProximityPrompt" and Object.Parent ~= CurrentRooms and not ItemNames[Object.Name] then
         return
     end
 
     if Object.Name ~= "TriggerEventCollision" then
-        if Object:IsA("ProximityPrompt") then
+        if Object.ClassName == "ProximityPrompt" then
             task.wait(math.random(5, 10) / 100)
         else
             task.wait(math.random(10, 30) / 100)
         end
     end
 
-    for Index, Room in pairs(CurrentRooms:GetChildren()) do
+    for Index, Room in (CurrentRooms:GetChildren()) do
         if Object:IsDescendantOf(Room) then
             Object:SetAttribute("ParentRoom", tonumber(Room.Name))
             break
@@ -4089,7 +4089,7 @@ Functions.HandleObject = function(Object)
             }, true)
         end
 
-        for Index2, Object2 in pairs(Object:GetChildren()) do
+        for Index2, Object2 in (Object:GetChildren()) do
             if Object2.Name == "ActivateEventPrompt" and Object2.MaxActivationDistance == 5 or Object2.Name == "ActivateEventPrompt" and Object2:GetAttribute("MaxActivationDistance_Old") and Object2:GetAttribute("MaxActivationDistance_Old") == 5 then
                 Object2:Destroy()
             end 
@@ -4240,7 +4240,7 @@ Functions.HandleObject = function(Object)
     elseif Object.Name == "Door" and Object.Parent ~= nil and tonumber(Object.Parent.Name) then
         local Children = 0
         local Doors = {}
-        for Index2, Object2 in pairs(Object:GetChildren()) do
+        for Index2, Object2 in (Object:GetChildren()) do
             if Object2.Name == "Door" and Object2:IsA("BasePart") then
                 Children = Children + 1
                 table.insert(Doors, Object2)
@@ -4255,7 +4255,7 @@ Functions.HandleObject = function(Object)
 
             HighlightModel:SetAttribute("ParentRoom", tonumber(Object.Parent.Name))
 
-            for Index2, Object2 in pairs(Doors) do
+            for Index2, Object2 in (Doors) do
                 local HighlightPart = Instance.new("Part", Object2)
                 HighlightPart.Transparency = 0.99
                 HighlightPart.Size = Object2.Size
@@ -4372,7 +4372,7 @@ Functions.HandleObject = function(Object)
                 table.insert(Objects.SeekHighlights, NewBeam)
             end
         end
-        for Index2, Object2 in pairs(Object:GetChildren()) do
+        for Index2, Object2 in (Object:GetChildren()) do
             CreateHighlight(Object2)
         end
 
@@ -4385,7 +4385,7 @@ Functions.HandleObject = function(Object)
             Connection:Disconnect()
         end)
     elseif Object.Name == "Bridge" then
-        for Index2, Object2 in pairs(Object:GetChildren()) do
+        for Index2, Object2 in (Object:GetChildren()) do
             if Object2.Name == "PlayerBarrier" and Object2.Size.Y == 2.75 and Object2.Rotation.X == 0 or Object2.Name == "PlayerBarrier" and Object2.Size.Y == 2.75 and Object2.Rotation.X == 180 then
 				local NewBridge = Object2:Clone()
 				NewBridge.CFrame = NewBridge.CFrame * CFrame.new(0, 0, -5)
@@ -4418,7 +4418,7 @@ Functions.HandleObject = function(Object)
 			return "Straight"
 		end
 
-		for Index, NewNode in pairs(Object:GetChildren()) do
+		for Index, NewNode in (Object:GetChildren()) do
 			local NodeID = tonumber(NewNode.Name:split("MinecartNode")[2])
             if NewNode:GetAttribute("DeathType") then
                 NewNode:SetAttribute("DistanceBlacklist", true)
@@ -4436,7 +4436,7 @@ Functions.HandleObject = function(Object)
         local function GetClosestNode(Node)
 			local ClosestNodeDistance = math.huge
 			local ClosestNode = nil
-			for i,NewNode in pairs(Object:GetChildren()) do
+			for i,NewNode in (Object:GetChildren()) do
 				local NodeID = NewNode.Name:split("MinecartNode")[2]
 				local NodeID2 = Node.Name:split("MinecartNode")[2]
 				if NewNode ~= Node and tonumber(NodeID) > tonumber(NodeID2) then					
@@ -4450,7 +4450,7 @@ Functions.HandleObject = function(Object)
 			return ClosestNode
 		end
 
-        for Index, Node in pairs(Object:GetChildren()) do
+        for Index, Node in (Object:GetChildren()) do
             if Node:GetAttribute("ForceConnect") then
                 local NextNode = GetClosestNode(Node)
                 if NextNode then
@@ -4477,7 +4477,7 @@ Functions.HandleObject = function(Object)
         end
         table.insert(Objects.Obstructions, Object)
     elseif Object.Name == "ScaryWall" then
-        for Index2, Object2 in pairs(Object:GetDescendants()) do
+        for Index2, Object2 in (Object:GetDescendants()) do
             if Object2:IsA("BasePart") then
                 Object2.CanTouch = not Toggles.BypassSeekingWall.Value
                 Object2.CanCollide = not Toggles.BypassSeekingWall.Value
@@ -4646,7 +4646,7 @@ Functions.HandleObject = function(Object)
         table.insert(Objects.Entities, Object)
     elseif Object.Name == "GloomPile" then
         if Toggles.BypassGloombatEggs.Value then
-            for Index2, Object2 in pairs(Object:GetDescendants()) do
+            for Index2, Object2 in (Object:GetDescendants()) do
                 if Object2:IsA("BasePart") then
                     Object2.CanTouch = false
                 end
@@ -4666,7 +4666,7 @@ Functions.HandleObject = function(Object)
                 if not Object:IsDescendantOf(game) then
                     break
                 end
-                for Index2, Object2 in pairs(Object:GetChildren()) do
+                for Index2, Object2 in (Object:GetChildren()) do
                     if Object2:IsA("BasePart") then
                         Abysall.Environment.firetouchinterest(RootPart, Object2, 0)
                         task.wait()
@@ -4713,7 +4713,7 @@ Functions.HandleObject = function(Object)
         end
         table.insert(Objects.Entities, Object)
     elseif Object.Name == "Seek_Arm" or Object.Name == "ChandelierObstruction" then
-        for Index, Part in pairs(Object:GetDescendants()) do
+        for Index, Part in (Object:GetDescendants()) do
             if Part:IsA("BasePart") then
                 Part.CanTouch = not Toggles.BypassSeekObstructions.Value
                 table.insert(Objects.SeekObstructions, Part)
@@ -4758,7 +4758,7 @@ Functions.HandleObject = function(Object)
     elseif Object.Name == "JeffTheKiller" then
         if Toggles.BypassJeff.Value then
             task.wait(1)
-            for Index2, Object2 in pairs(Object:GetDescendants()) do
+            for Index2, Object2 in (Object:GetDescendants()) do
                 if Object2:IsA("BasePart") then
                     Object2.CanCollide = false
                     Object2.CanTouch = false
@@ -4820,7 +4820,7 @@ Functions.HandleObject = function(Object)
 
         if Toggles.RemoveFigure.Value and Functions.CheckCompatability({"isnetworkowner"}) then
             if Floor == "Mines" then
-                for Index2, Object2 in pairs(Object:GetDescendants()) do
+                for Index2, Object2 in (Object:GetDescendants()) do
                     if Object2:IsA("BasePart") then
                         task.spawn(function()
                             while Abysall.Environment.isnetworkowner(Object2) do
@@ -4832,7 +4832,7 @@ Functions.HandleObject = function(Object)
                 end
             elseif Floor == "OldHotel" or Floor == "Fools" then
                 CurrentRooms.ChildAdded:Wait()
-                for Index2, Object2 in pairs(Object:GetDescendants()) do
+                for Index2, Object2 in (Object:GetDescendants()) do
                     if Object2:IsA("BasePart") then
                         task.spawn(function()
                             while Abysall.Environment.isnetworkowner(Object2) do
@@ -5016,7 +5016,7 @@ Connections.PromptAnimationFixer1 = Services.ProximityPromptService.PromptButton
     end
 end)
 
-for Index, Object in pairs(Services.Workspace:GetDescendants()) do
+for Index, Object in (Services.Workspace:GetDescendants()) do
     task.spawn(function()
         Functions.HandleObject(Object)
     end)
@@ -5026,7 +5026,7 @@ Connections.InstanceHandler = Services.Workspace.DescendantAdded:Connect(functio
     Functions.HandleObject(Object)
 end)
 
-for Index, Object in pairs(Services.Players:GetPlayers()) do
+for Index, Object in (Services.Players:GetPlayers()) do
     if Object ~= LocalPlayer then
         if Object.Character and Toggles.PlayerESPToggle.Value then
             Functions.AddESP({
@@ -5265,7 +5265,7 @@ end
 local LastFire = tick()
 Connections.AutoInteract = Services.RunService.Heartbeat:Connect(function()
     if Toggles.AutoInteractToggle.Value and tick() - LastFire > 0.05 or Options.AutoInteractKeybind:GetState() and tick() - LastFire > 0.05 then
-        for Index, Prompt in pairs(Objects.Prompts) do
+        for Index, Prompt in (Objects.Prompts) do
            task.spawn(function()
                 if Prompt.Parent ~= nil and Prompt.Parent:IsA("BasePart") or Prompt.Parent ~= nil and Prompt.Parent:IsA("Model") then
                     local Distance
@@ -5400,7 +5400,7 @@ Connections.EntityHandler = Services.Workspace.ChildAdded:Connect(function(Entit
         }
 
         while not Entity.PrimaryPart do
-            for Index, Child in pairs(Entity:GetChildren()) do
+            for Index, Child in (Entity:GetChildren()) do
                 if Child:IsA("BasePart") then
                     Entity.PrimaryPart = Child
                 end
@@ -5460,9 +5460,9 @@ end)
 
 local LastClean = tick()
 Connections.Cleaner = Services.RunService.Heartbeat:Connect(function()
-    if tick() - LastClean > 0.2 then
-        for Index, Array in pairs(Objects) do
-            for Index2, Object in pairs(Array) do
+    if tick() - LastClean > 0.5 then
+        for Index, Array in (Objects) do
+            for Index2, Object in (Array) do
                 local Position = table.find(Array, Object)
                 if Object == nil and Position or not Object:IsDescendantOf(Services.Workspace) and Position then
                     table.remove(Array, Position)
@@ -5482,8 +5482,8 @@ end)
 
 local LastFix = tick()
 Connections.PromptFixer = Services.RunService.Heartbeat:Connect(function()
-    if tick() - LastFix > 0.2 then
-        for Index, Prompt in pairs(Objects.Prompts) do
+    if tick() - LastFix > 0.5 then
+        for Index, Prompt in (Objects.Prompts) do
             if Prompt:HasTag("DisableWhenEnabledOnClient") then
                 Prompt:RemoveTag("DisableWhenEnabledOnClient")
             end
@@ -5506,7 +5506,7 @@ LocalPlayer.CharacterAdded:Connect(function(NewCharacter)
 end)
 
 Library:OnUnload(function()
-    for Index, Connection in pairs(Connections) do
+    for Index, Connection in (Connections) do
         pcall(function()
             Index:Disconnect()
         end)
@@ -5515,12 +5515,12 @@ Library:OnUnload(function()
         end)
     end
 
-    for Index, Object in pairs(Objects.Entities) do
+    for Index, Object in (Objects.Entities) do
         if Object.Name == "Snare" or Object.Name == "GiggleCeiling" then
             Object:WaitForChild("Hitbox").CanTouch = true
         end
         if Object.Name == "GloomPile" then
-            for Index2, Object2 in pairs(Object:GetDescendants()) do
+            for Index2, Object2 in (Object:GetDescendants()) do
                 if Object2:IsA("BasePart") then
                     Object2.CanTouch = true
                 end
@@ -5538,11 +5538,11 @@ Library:OnUnload(function()
         end
     end
 
-    for Index, Object in pairs(Objects.SeekBridges) do
+    for Index, Object in (Objects.SeekBridges) do
         Object:Destroy()
     end
 
-    for Index, Fog in pairs(Globals.FogInstances) do
+    for Index, Fog in (Globals.FogInstances) do
         Fog.Density = Fog:GetAttribute("Density_Old")
     end
     Services.Lighting.FogEnd = Globals.OldFog
@@ -5588,7 +5588,7 @@ Library:OnUnload(function()
     local OldAmbient = CurrentRooms:FindFirstChild(tostring(LocalPlayer:GetAttribute("CurrentRoom"))):GetAttribute("Ambient")
     Services.TweenService:Create(Services.Lighting, TweenInfo.new(0.2, Enum.EasingStyle.Exponential), {Ambient = OldAmbient}):Play()
 
-    for Index, Prompt in pairs(Objects.Prompts) do
+    for Index, Prompt in (Objects.Prompts) do
         if FakePrompts[Prompt] then
             FakePrompts[Prompt].Parent = Prompt.Parent
             Prompt:Destroy()
@@ -5602,7 +5602,7 @@ Library:OnUnload(function()
     Character:SetAttribute("CanJump", OldJump)
     Character:SetAttribute("CanSlide", OldSlide)
 
-    for Index, Object in pairs(Services.Workspace:GetDescendants()) do
+    for Index, Object in (Services.Workspace:GetDescendants()) do
         task.spawn(function()
             Functions.RemoveESP(Object)
         end)
