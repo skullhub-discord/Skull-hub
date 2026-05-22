@@ -10,8 +10,8 @@ local Window = Rayfield:CreateWindow({
       FileName = "LightHubConfig"
    },
    Discord = {
-      Enabled = false,
-      Invite = "",
+      Enabled = true,
+      Invite = "https://discord.gg/pVbmDSmawU",
       RememberJoins = true
    },
    KeySystem = false
