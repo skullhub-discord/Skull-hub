@@ -1,17 +1,17 @@
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "N4tur3 Hub ⛰️",
-   LoadingTitle = "N4tur3 Hub is loading!",
-   LoadingSubtitle = "Optimizing for Escape Tsunami for Cars... 🏎️💨",
+   Name = "Light Hub ⛰️",
+   LoadingTitle = "Light Hub is loading!",
+   LoadingSubtitle = "Backdooring Escape Tsunami for Cars... 🏎️💨",
    ConfigurationSaving = {
       Enabled = true,
       FolderName = "MyScript",
-      FileName = "N4tur3HubConfig"
+      FileName = "LightHubConfig"
    },
    Discord = {
-      Enabled = false,
-      Invite = "",
+      Enabled = true,
+      Invite = "https://discord.gg/TF4cyx6xyd",
       RememberJoins = true
    },
    KeySystem = false
