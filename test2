@@ -1,1 +1,62 @@
-print("hello Mom")
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Light Hub | Rivals (Github)",
+   LoadingTitle = "Loading Assets...",
+   LoadingSubtitle = "Dont worry execute lalol we put the backdoors",
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = "MyScriptHub",
+      FileName = "Config"
+   },
+   KeySystem = false -- Set to true if you want a key system
+})
+
+local Tab = Window:CreateTab("Main", nil) -- Title, Icon
+
+local Section = Tab:CreateSection("Features")
+
+-- Create a button
+Tab:CreateButton({
+   Name = "Button Example",
+   Callback = function()
+      print("Button clicked!")
+   end,
+})
+
+Tab:CreateToggle({
+   Name = "Toggle Example",
+   CurrentValue = false,
+   Flag = "Toggle1",
+   Callback = function(Value)
+    local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+pcall(function()
+    local Gun = require(player.PlayerScripts.Modules.ItemTypes.Gun)
+    if Gun and Gun.Update then
+        local oldUpdate = Gun.Update
+        Gun.Update = function(self, dt, ...)
+            if self._shoot_cooldown then
+                self._shoot_cooldown = 0
+            end
+            return oldUpdate(self, dt, ...)
+        end
+    end
+end)
+   end,
+})
+
+Tab:CreateSlider({
+   Name = "Slider Example",
+   Range = {0, 100},
+   Increment = 1,
+   Suffix = "%",
+   CurrentValue = 10,
+   Flag = "Slider1",
+   Callback = function(Value)
+      print("Slider value: " .. Value)
+   end,
+})
+
+-- Load the UI
+Rayfield:LoadConfiguration()
